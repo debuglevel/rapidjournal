@@ -116,9 +116,20 @@ button {
   display: none;
 }
 
+#entry-list li .datetime {
+  font-size: 14px;
+  color: #b3b3b3;
+
+  word-break: break-word;
+  padding: 5px 5px 0px 5px;
+  display: block;
+  line-height: 1;
+  transition: color 0.4s;
+}
+
 #entry-list li label {
   word-break: break-word;
-  padding: 15px;
+  padding: 0px 15px 15px 15px;
   display: block;
   line-height: 1.2;
   transition: color 0.4s;

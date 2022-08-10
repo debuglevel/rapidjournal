@@ -117,6 +117,10 @@
    * @returns HTML list item
    */
   function createEntryListItem(entry) {
+    var datelabel = document.createElement('label');
+    datelabel.className = 'datetime';
+    datelabel.appendChild(document.createTextNode(entry.datetime));
+
     var label = document.createElement('label');
     label.appendChild(document.createTextNode(entry.content));
     label.addEventListener('dblclick', entryDoubleClicked.bind(this, entry));
@@ -127,6 +131,7 @@
 
     var divDisplay = document.createElement('div');
     divDisplay.className = 'view';
+    divDisplay.appendChild(datelabel);
     divDisplay.appendChild(label);
     divDisplay.appendChild(deleteLink);
 
