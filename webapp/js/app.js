@@ -5,25 +5,23 @@
   var newTodoDom = document.getElementById('new-todo');
   var syncDom = document.getElementById('sync-wrapper');
 
-  // EDITING STARTS HERE (you dont need to edit anything above this line)
-
+  // Use local database to write in offline mode and sync afterwards.
   var db = new PouchDB('rapidjournal');
 
-  // Replace with remote instance, this just replicates to another local instance.
+  // Remote database to replicate/sync to when online.
   var remoteCouch = 'https://marc:PASSWORD@debuglevel.de/couchdb/rapidjournal';
 
+  // Subscribe to database changes
   db.changes({
     since: 'now',
     live: true
   }).on('change', showTodos);
 
-  // We have to create a new todo document and enter it in the database
   function addTodo(text) {
     var todo = {
       _id: new Date().toISOString(),
       datetime: new Date().toISOString(),
       content: text,
-      completed: false
     };
     db.put(todo, function callback(err, result) {
       if (!err) {
@@ -39,10 +37,10 @@
     });
   }
 
-  function checkboxChanged(todo, event) {
-    todo.completed = event.target.checked;
-    db.put(todo);
-  }
+  // function checkboxChanged(todo, event) {
+  //   todo.completed = event.target.checked;
+  //   db.put(todo);
+  // }
 
   // User pressed the delete button for a todo, delete it
   function deleteButtonPressed(todo) {
@@ -61,15 +59,13 @@
     }
   }
 
-  // Initialise a sync with the remote server
+  // Initialize a sync with the remote server
   function sync() {
     syncDom.setAttribute('data-sync-state', 'syncing');
     var opts = { live: true };
     db.replicate.to(remoteCouch, opts, syncError);
     db.replicate.from(remoteCouch, opts, syncError);
   }
-
-  // EDITING STARTS HERE (you dont need to edit anything below this line)
 
   // There was some form or error syncing
   function syncError() {
@@ -96,10 +92,10 @@
   // Given an object representing a todo, this will create a list item
   // to display it.
   function createTodoListItem(todo) {
-    var checkbox = document.createElement('input');
-    checkbox.className = 'toggle';
-    checkbox.type = 'checkbox';
-    checkbox.addEventListener('change', checkboxChanged.bind(this, todo));
+    // var checkbox = document.createElement('input');
+    // checkbox.className = 'toggle';
+    // checkbox.type = 'checkbox';
+    // checkbox.addEventListener('change', checkboxChanged.bind(this, todo));
 
     var label = document.createElement('label');
     label.appendChild(document.createTextNode(todo.content));
@@ -127,10 +123,10 @@
     li.appendChild(divDisplay);
     li.appendChild(inputEditTodo);
 
-    if (todo.completed) {
-      li.className += 'complete';
-      checkbox.checked = true;
-    }
+    // if (todo.completed) {
+    //   li.className += 'complete';
+    //   checkbox.checked = true;
+    // }
 
     return li;
   }
