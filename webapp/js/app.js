@@ -119,7 +119,9 @@
   function createEntryListItem(entry) {
     var datelabel = document.createElement('label');
     datelabel.className = 'datetime';
-    datelabel.appendChild(document.createTextNode(entry.datetime));
+    datelabel.appendChild(document.createTextNode(
+      new Date(entry.datetime).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })
+      ));
 
     var label = document.createElement('label');
     label.appendChild(document.createTextNode(entry.content));
