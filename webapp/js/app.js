@@ -2,7 +2,7 @@
   'use strict';
 
   var ENTER_KEY = 13;
-  var newTodoDom = document.getElementById('new-todo');
+  var newEntryDom = document.getElementById('new-entry');
   var syncDom = document.getElementById('sync-wrapper');
 
   // Use local database to write in offline mode and sync afterwards.
@@ -21,47 +21,47 @@
   db.changes({
     since: 'now',
     live: true
-  }).on('change', showTodos);
+  }).on('change', showEntrys);
 
-  function addTodo(text) {
-    var todo = {
+  function addEntry(text) {
+    var entry = {
       _id: new Date().toISOString(),
       datetime: new Date().toISOString(),
       content: text,
     };
-    db.put(todo, function callback(err, result) {
+    db.put(entry, function callback(err, result) {
       if (!err) {
-        console.log('Successfully posted a todo!');
+        console.log('Successfully posted a entry!');
       }
     });
   }
 
-  // Show the current list of todos by reading them from the database
-  function showTodos() {
+  // Show the current list of entrys by reading them from the database
+  function showEntrys() {
     db.allDocs({ include_docs: true, descending: true }, function (err, doc) {
-      redrawTodosUI(doc.rows);
+      redrawEntrysUI(doc.rows);
     });
   }
 
-  // function checkboxChanged(todo, event) {
-  //   todo.completed = event.target.checked;
-  //   db.put(todo);
+  // function checkboxChanged(entry, event) {
+  //   entry.completed = event.target.checked;
+  //   db.put(entry);
   // }
 
-  // User pressed the delete button for a todo, delete it
-  function deleteButtonPressed(todo) {
-    db.remove(todo);
+  // User pressed the delete button for a entry, delete it
+  function deleteButtonPressed(entry) {
+    db.remove(entry);
   }
 
-  // The input box when editing a todo has blurred, we should save
-  // the new title or delete the todo if the title is empty
-  function todoBlurred(todo, event) {
+  // The input box when editing a entry has blurred, we should save
+  // the new title or delete the entry if the title is empty
+  function entryBlurred(entry, event) {
     var trimmedText = event.target.value.trim();
     if (!trimmedText) {
-      db.remove(todo);
+      db.remove(entry);
     } else {
-      todo.content = trimmedText;
-      db.put(todo);
+      entry.content = trimmedText;
+      db.put(entry);
     }
   }
 
@@ -78,38 +78,38 @@
     syncDom.setAttribute('data-sync-state', 'error');
   }
 
-  // User has double clicked a todo, display an input so they can edit the title
-  function todoDblClicked(todo) {
-    var div = document.getElementById('li_' + todo._id);
-    var inputEditTodo = document.getElementById('input_' + todo._id);
+  // User has double clicked a entry, display an input so they can edit the title
+  function entryDblClicked(entry) {
+    var div = document.getElementById('li_' + entry._id);
+    var inputEditEntry = document.getElementById('input_' + entry._id);
     div.className = 'editing';
-    inputEditTodo.focus();
+    inputEditEntry.focus();
   }
 
   // If they press enter while editing an entry, blur it to trigger save
   // (or delete)
-  function todoKeyPressed(todo, event) {
+  function entryKeyPressed(entry, event) {
     if (event.keyCode === ENTER_KEY) {
-      var inputEditTodo = document.getElementById('input_' + todo._id);
-      inputEditTodo.blur();
+      var inputEditEntry = document.getElementById('input_' + entry._id);
+      inputEditEntry.blur();
     }
   }
 
-  // Given an object representing a todo, this will create a list item
+  // Given an object representing a entry, this will create a list item
   // to display it.
-  function createTodoListItem(todo) {
+  function createEntryListItem(entry) {
     // var checkbox = document.createElement('input');
     // checkbox.className = 'toggle';
     // checkbox.type = 'checkbox';
-    // checkbox.addEventListener('change', checkboxChanged.bind(this, todo));
+    // checkbox.addEventListener('change', checkboxChanged.bind(this, entry));
 
     var label = document.createElement('label');
-    label.appendChild(document.createTextNode(todo.content));
-    label.addEventListener('dblclick', todoDblClicked.bind(this, todo));
+    label.appendChild(document.createTextNode(entry.content));
+    label.addEventListener('dblclick', entryDblClicked.bind(this, entry));
 
     var deleteLink = document.createElement('button');
     deleteLink.className = 'destroy';
-    deleteLink.addEventListener('click', deleteButtonPressed.bind(this, todo));
+    deleteLink.addEventListener('click', deleteButtonPressed.bind(this, entry));
 
     var divDisplay = document.createElement('div');
     divDisplay.className = 'view';
@@ -117,19 +117,19 @@
     divDisplay.appendChild(label);
     divDisplay.appendChild(deleteLink);
 
-    var inputEditTodo = document.createElement('input');
-    inputEditTodo.id = 'input_' + todo._id;
-    inputEditTodo.className = 'edit';
-    inputEditTodo.value = todo.content;
-    inputEditTodo.addEventListener('keypress', todoKeyPressed.bind(this, todo));
-    inputEditTodo.addEventListener('blur', todoBlurred.bind(this, todo));
+    var inputEditEntry = document.createElement('input');
+    inputEditEntry.id = 'input_' + entry._id;
+    inputEditEntry.className = 'edit';
+    inputEditEntry.value = entry.content;
+    inputEditEntry.addEventListener('keypress', entryKeyPressed.bind(this, entry));
+    inputEditEntry.addEventListener('blur', entryBlurred.bind(this, entry));
 
     var li = document.createElement('li');
-    li.id = 'li_' + todo._id;
+    li.id = 'li_' + entry._id;
     li.appendChild(divDisplay);
-    li.appendChild(inputEditTodo);
+    li.appendChild(inputEditEntry);
 
-    // if (todo.completed) {
+    // if (entry.completed) {
     //   li.className += 'complete';
     //   checkbox.checked = true;
     // }
@@ -137,27 +137,27 @@
     return li;
   }
 
-  function redrawTodosUI(todos) {
-    var ul = document.getElementById('todo-list');
+  function redrawEntrysUI(entrys) {
+    var ul = document.getElementById('entry-list');
     ul.innerHTML = '';
-    todos.forEach(function (todo) {
-      ul.appendChild(createTodoListItem(todo.doc));
+    entrys.forEach(function (entry) {
+      ul.appendChild(createEntryListItem(entry.doc));
     });
   }
 
-  function newTodoKeyPressHandler(event) {
+  function newEntryKeyPressHandler(event) {
     if (event.keyCode === ENTER_KEY) {
-      addTodo(newTodoDom.value);
-      newTodoDom.value = '';
+      addEntry(newEntryDom.value);
+      newEntryDom.value = '';
     }
   }
 
   function addEventListeners() {
-    newTodoDom.addEventListener('keypress', newTodoKeyPressHandler, false);
+    newEntryDom.addEventListener('keypress', newEntryKeyPressHandler, false);
   }
 
   addEventListeners();
-  showTodos();
+  showEntrys();
 
   if (remoteCouch) {
     sync();
