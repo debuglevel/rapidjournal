@@ -1,4 +1,4 @@
-(function() {
+(function () {
 
   'use strict';
 
@@ -34,7 +34,7 @@
 
   // Show the current list of todos by reading them from the database
   function showTodos() {
-    db.allDocs({include_docs: true, descending: true}, function(err, doc) {
+    db.allDocs({ include_docs: true, descending: true }, function (err, doc) {
       redrawTodosUI(doc.rows);
     });
   }
@@ -64,7 +64,7 @@
   // Initialise a sync with the remote server
   function sync() {
     syncDom.setAttribute('data-sync-state', 'syncing');
-    var opts = {live: true};
+    var opts = { live: true };
     db.replicate.to(remoteCouch, opts, syncError);
     db.replicate.from(remoteCouch, opts, syncError);
   }
@@ -102,12 +102,12 @@
     checkbox.addEventListener('change', checkboxChanged.bind(this, todo));
 
     var label = document.createElement('label');
-    label.appendChild( document.createTextNode(todo.title));
+    label.appendChild(document.createTextNode(todo.title));
     label.addEventListener('dblclick', todoDblClicked.bind(this, todo));
 
     var deleteLink = document.createElement('button');
     deleteLink.className = 'destroy';
-    deleteLink.addEventListener( 'click', deleteButtonPressed.bind(this, todo));
+    deleteLink.addEventListener('click', deleteButtonPressed.bind(this, todo));
 
     var divDisplay = document.createElement('div');
     divDisplay.className = 'view';
@@ -138,12 +138,12 @@
   function redrawTodosUI(todos) {
     var ul = document.getElementById('todo-list');
     ul.innerHTML = '';
-    todos.forEach(function(todo) {
+    todos.forEach(function (todo) {
       ul.appendChild(createTodoListItem(todo.doc));
     });
   }
 
-  function newTodoKeyPressHandler( event ) {
+  function newTodoKeyPressHandler(event) {
     if (event.keyCode === ENTER_KEY) {
       addTodo(newTodoDom.value);
       newTodoDom.value = '';
