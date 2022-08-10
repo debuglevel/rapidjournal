@@ -5,7 +5,7 @@ echo
 read -p "Content: " CONTENT
 
 DATETIME=$(date --iso-8601=seconds)
-ID=$(uuidgen)
+ID=$(date --iso-8601=seconds)
 
 JSON_STRING=$( jq -n \
                   --arg content "$CONTENT" \
