@@ -1,5 +1,4 @@
 (function () {
-
   'use strict';
 
   var ENTER_KEY = 13;
@@ -8,10 +7,11 @@
 
   // EDITING STARTS HERE (you dont need to edit anything above this line)
 
-  var db = new PouchDB('todos');
+  var db = new PouchDB('rapidjournal');
 
   // Replace with remote instance, this just replicates to another local instance.
-  var remoteCouch = 'todos_remote';
+  //var remoteCouch = 'https://debuglevel.de/couchdb/';
+  var remoteCouch = 'test';
 
   db.changes({
     since: 'now',
@@ -22,7 +22,8 @@
   function addTodo(text) {
     var todo = {
       _id: new Date().toISOString(),
-      title: text,
+      datetime: new Date().toISOString(),
+      content: text,
       completed: false
     };
     db.put(todo, function callback(err, result) {
@@ -56,7 +57,7 @@
     if (!trimmedText) {
       db.remove(todo);
     } else {
-      todo.title = trimmedText;
+      todo.content = trimmedText;
       db.put(todo);
     }
   }
@@ -102,7 +103,7 @@
     checkbox.addEventListener('change', checkboxChanged.bind(this, todo));
 
     var label = document.createElement('label');
-    label.appendChild(document.createTextNode(todo.title));
+    label.appendChild(document.createTextNode(todo.content));
     label.addEventListener('dblclick', todoDblClicked.bind(this, todo));
 
     var deleteLink = document.createElement('button');
@@ -118,7 +119,7 @@
     var inputEditTodo = document.createElement('input');
     inputEditTodo.id = 'input_' + todo._id;
     inputEditTodo.className = 'edit';
-    inputEditTodo.value = todo.title;
+    inputEditTodo.value = todo.content;
     inputEditTodo.addEventListener('keypress', todoKeyPressed.bind(this, todo));
     inputEditTodo.addEventListener('blur', todoBlurred.bind(this, todo));
 
