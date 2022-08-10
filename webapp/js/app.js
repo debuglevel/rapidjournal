@@ -23,32 +23,40 @@
     live: true
   }).on('change', showEntrys);
 
+  /**
+   * Adds an entry to the local database.
+   * @param {String} text Text of the entry
+   */
   function addEntry(text) {
     var entry = {
       _id: new Date().toISOString(),
       datetime: new Date().toISOString(),
       content: text,
     };
+
     db.put(entry, function callback(err, result) {
       if (!err) {
-        console.log('Successfully posted a entry!');
+        console.log('Posting entry successful.');
+      }else{
+        console.error('Posting entry failed.');
+        console.error(err);
       }
     });
   }
 
-  // Show the current list of entrys by reading them from the database
+  /**
+   * Reads all entries from the local database and renders them.
+   */
   function showEntrys() {
-    db.allDocs({ include_docs: true, descending: true }, function (err, doc) {
-      redrawEntrysUI(doc.rows);
+    db.allDocs({ include_docs: true, descending: true }, function (err, result) {
+      renderEntrys(result.rows);
     });
   }
 
-  // function checkboxChanged(entry, event) {
-  //   entry.completed = event.target.checked;
-  //   db.put(entry);
-  // }
-
-  // User pressed the delete button for a entry, delete it
+  /**
+   * Removes an entry from the local database.
+   * @param {*} entry The entry object to remove (probably only needs an object with _id set).
+   */
   function deleteButtonPressed(entry) {
     db.remove(entry);
   }
@@ -65,21 +73,29 @@
     }
   }
 
-  // Initialize a sync with the remote server
-  function sync() {
+  /**
+   * Initialize synchronization with the remote CouchDB.
+   */
+  function initializeSynchronization() {
     syncDom.setAttribute('data-sync-state', 'syncing');
+
     var opts = { live: true };
     db.replicate.to(remoteCouch, opts, syncError);
     db.replicate.from(remoteCouch, opts, syncError);
   }
 
-  // There was some form or error syncing
+  /**
+   * Show sync error on UI.
+   */
   function syncError() {
     syncDom.setAttribute('data-sync-state', 'error');
   }
 
-  // User has double clicked a entry, display an input so they can edit the title
-  function entryDblClicked(entry) {
+  /**
+   * Display input box to edit an entry.
+   * @param {*} entry 
+   */
+  function entryDoubleClicked(entry) {
     var div = document.getElementById('li_' + entry._id);
     var inputEditEntry = document.getElementById('input_' + entry._id);
     div.className = 'editing';
@@ -87,7 +103,7 @@
   }
 
   // If they press enter while editing an entry, blur it to trigger save
-  // (or delete)
+  // TODO: Seems like a hack.
   function entryKeyPressed(entry, event) {
     if (event.keyCode === ENTER_KEY) {
       var inputEditEntry = document.getElementById('input_' + entry._id);
@@ -95,25 +111,22 @@
     }
   }
 
-  // Given an object representing a entry, this will create a list item
-  // to display it.
+  /**
+   * Builds an HTML list item (<li>) containing the entry.
+   * @param {*} entry 
+   * @returns HTML list item
+   */
   function createEntryListItem(entry) {
-    // var checkbox = document.createElement('input');
-    // checkbox.className = 'toggle';
-    // checkbox.type = 'checkbox';
-    // checkbox.addEventListener('change', checkboxChanged.bind(this, entry));
-
     var label = document.createElement('label');
     label.appendChild(document.createTextNode(entry.content));
-    label.addEventListener('dblclick', entryDblClicked.bind(this, entry));
+    label.addEventListener('dblclick', entryDoubleClicked.bind(this, entry));
 
     var deleteLink = document.createElement('button');
-    deleteLink.className = 'destroy';
+    deleteLink.className = 'delete';
     deleteLink.addEventListener('click', deleteButtonPressed.bind(this, entry));
 
     var divDisplay = document.createElement('div');
     divDisplay.className = 'view';
-    //divDisplay.appendChild(checkbox);
     divDisplay.appendChild(label);
     divDisplay.appendChild(deleteLink);
 
@@ -129,17 +142,18 @@
     li.appendChild(divDisplay);
     li.appendChild(inputEditEntry);
 
-    // if (entry.completed) {
-    //   li.className += 'complete';
-    //   checkbox.checked = true;
-    // }
-
     return li;
   }
 
-  function redrawEntrysUI(entrys) {
+  /**
+   * Renders all entries into the list.
+   * @param {*} entrys 
+   */
+  function renderEntrys(entrys) {
     var ul = document.getElementById('entry-list');
+
     ul.innerHTML = '';
+
     entrys.forEach(function (entry) {
       ul.appendChild(createEntryListItem(entry.doc));
     });
@@ -152,6 +166,9 @@
     }
   }
 
+  /**
+   * Adds event listeners to the new-entry input box.
+   */
   function addEventListeners() {
     newEntryDom.addEventListener('keypress', newEntryKeyPressHandler, false);
   }
@@ -160,7 +177,6 @@
   showEntrys();
 
   if (remoteCouch) {
-    sync();
+    initializeSynchronization();
   }
-
 })();

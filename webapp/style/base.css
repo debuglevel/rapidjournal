@@ -255,7 +255,7 @@ label[for='toggle-all'] {
   text-decoration: line-through;
 }
 
-#entry-list li .destroy {
+#entry-list li .delete {
   display: none;
   position: absolute;
   top: 0;
@@ -273,7 +273,7 @@ label[for='toggle-all'] {
   transition: all 0.2s;
 }
 
-#entry-list li .destroy:hover {
+#entry-list li .delete:hover {
   text-shadow: 0 0 1px #000, 0 0 10px rgba(199, 107, 107, 0.8);
   -webkit-transform: scale(1.3);
   -moz-transform: scale(1.3);
@@ -282,11 +282,11 @@ label[for='toggle-all'] {
   transform: scale(1.3);
 }
 
-#entry-list li .destroy:after {
+#entry-list li .delete:after {
   content: '✖';
 }
 
-#entry-list li:hover .destroy {
+#entry-list li:hover .delete {
   display: block;
 }
 
@@ -383,7 +383,7 @@ label[for='toggle-all'] {
 
 /*
   Hack to remove background from Mobile Safari.
-  Can't use it globally since it destroys checkboxes in Firefox and Opera
+  Can't use it globally since it deletes checkboxes in Firefox and Opera
 */
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   #toggle-all,
