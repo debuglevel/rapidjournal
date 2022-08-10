@@ -7,7 +7,19 @@
 
   // EDITING STARTS HERE (you dont need to edit anything above this line)
 
-  var db = new PouchDB('rapidjournal');
+  //var db = new PouchDB('rapidjournal');
+  var db = new PouchDB('https://debuglevel.de/couchdb/rapidjournal', {skip_setup: true});
+  db.logIn('marc', '...', function (err, response) {
+    if (err) {
+      if (err.name === 'unauthorized' || err.name === 'forbidden') {
+        // name or password incorrect
+        console.log(err);
+      } else {
+        console.log("Logged in!");
+        // cosmic rays, a meteor, etc.
+      }
+    }
+  });
 
   // Replace with remote instance, this just replicates to another local instance.
   //var remoteCouch = 'https://debuglevel.de/couchdb/';
