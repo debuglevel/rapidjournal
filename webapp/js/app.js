@@ -8,8 +8,14 @@
   // Use local database to write in offline mode and sync afterwards.
   var db = new PouchDB('rapidjournal');
 
+  let password = prompt("Please enter your password");
   // Remote database to replicate/sync to when online.
-  var remoteCouch = 'https://marc:PASSWORD@debuglevel.de/couchdb/rapidjournal';
+  let remoteCouch;
+  if (password == null || password == "") {
+    remoteCouch = undefined;
+  } else {
+    remoteCouch = 'https://marc:'+password+'@debuglevel.de/couchdb/rapidjournal';
+  }
 
   // Subscribe to database changes
   db.changes({
