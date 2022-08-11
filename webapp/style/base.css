@@ -125,10 +125,21 @@ button {
   display: none;
 }
 
+[data-sync-state=not-initialized] #sync-not-initialized {
+  display: block;
+  background-color: rgb(255, 255, 226);
+}
+
+[data-sync-state]:not([data-sync-state=not-initialized]) #sync-not-initialized {
+  display: none;
+}
+
 [data-sync-state=syncing] #sync-success {
   display: block;
+  background-color: rgb(229, 253, 229);
 }
 
 [data-sync-state=error] #sync-error {
   display: block;
+  background-color: lightpink;
 }

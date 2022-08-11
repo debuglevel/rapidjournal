@@ -13,6 +13,14 @@
 <body>
   <p class="display-1">RapidJournal</p>
 
+  <footer id="footer">
+    <div id="sync-wrapper" data-sync-state="not-initialized">
+      <div id="sync-not-initialized">⛔ Synchronization was not (yet) initialized.</div>
+      <div id="sync-success">💾 Continuously syncing in background...</div>
+      <div id="sync-error">😥 There is a problem with the synchronization. Please have a look into the console.</div>
+    </div>
+  </footer>
+
   <section id="entryapp">
     <header id="header">
       <input id="new-entry" placeholder="What is on your mind? 💭" autofocus>
@@ -21,13 +29,6 @@
       <ul id="entry-list"></ul>
     </section>
   </section>
-
-  <footer id="footer">
-    <div id="sync-wrapper">
-      <div id="sync-success">Continuously syncing in background... ☁</div>
-      <div id="sync-error">There was a problem while syncing 😥</div>
-    </div>
-  </footer>
 
   <script src="//cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
   <script src="//cdn.jsdelivr.net/npm/pouchdb@7.3.0/dist/pouchdb.min.js"></script>
