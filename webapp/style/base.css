@@ -127,7 +127,7 @@ button {
 
 [data-sync-state=not-initialized] #sync-not-initialized {
   display: block;
-  background-color: rgb(255, 255, 226);
+  background-color: #f4f5ca;
 }
 
 [data-sync-state]:not([data-sync-state=not-initialized]) #sync-not-initialized {
@@ -136,7 +136,7 @@ button {
 
 [data-sync-state=syncing] #sync-success {
   display: block;
-  background-color: rgb(229, 253, 229);
+  background-color: rgb(210 232 210);
 }
 
 [data-sync-state=error] #sync-error {
