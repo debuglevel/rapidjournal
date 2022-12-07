@@ -140,8 +140,9 @@
       new Date(entry.datetime).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })
     ));
 
+    // TODO: Display strings with \n inside in this <label>.
     var label = document.createElement('label');
-    label.appendChild(document.createTextNode(entry.content));
+    label.appendChild(document.createTextNode(content));
     label.addEventListener('dblclick', onEntryDoubleClicked.bind(this, entry));
 
     var deleteLink = document.createElement('button');
