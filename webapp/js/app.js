@@ -65,9 +65,15 @@
    * Reads all entries from the local database and renders them.
    */
   function showAllEntries() {
-    db.allDocs({ include_docs: true, descending: true }, function (err, result) {
-      renderAllEntries(result.rows);
-    });
+    db.allDocs(
+      { 
+        include_docs: true, 
+        descending: true,
+      }, 
+      function (err, result) {
+        renderAllEntries(result.rows);
+      }
+    );
   }
 
   /**
