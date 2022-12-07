@@ -15,13 +15,14 @@
 
   <div id="sync-wrapper" data-sync-state="not-initialized">
     <div id="sync-not-initialized">⛔ Synchronization was not (yet) initialized.</div>
-    <div id="sync-success">💾 Continuously syncing in background...</div>
+    <div id="sync-success">💾 Continuously synchronizing in background...</div>
     <div id="sync-error">😥 There is a problem with the synchronization. Please have a look into the console.</div>
   </div>
 
   <section id="entryapp">
     <header id="header">
-      <input id="new-entry" placeholder="What is on your mind? 💭" autofocus>
+      <!-- The following input text field should be multiline -->
+      <textarea id="new-entry" placeholder="What is on your mind? 💭" autofocus></textarea>
     </header>
     <section id="main">
       <ul id="entry-list"></ul>
