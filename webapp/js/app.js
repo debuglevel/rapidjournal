@@ -64,16 +64,30 @@
   /**
    * Reads all entries from the local database and renders them.
    */
-  function showAllEntries() {
-    db.allDocs(
-      { 
-        include_docs: true, 
-        descending: true,
-      }, 
-      function (err, result) {
-        renderAllEntries(result.rows);
-      }
-    );
+  function showAllEntries(searchString) {
+    if (searchString === undefined || searchString === null || searchString === '') {
+      // Just query everything (more efficient than a query).
+      db.allDocs(
+        {
+          include_docs: true,
+          descending: true,
+        },
+        function (err, result) {
+          renderAllEntries(result.rows); // Each element contains a doc property which contains the actual document.
+        }
+      );
+    } else {
+      console.log(db);
+      // Query for entries containing the search string in their content attribute.
+      db.find({
+        selector: { content: { $regex: new RegExp(searchString, 'i') } },
+        //sort: [{ datetime: 'desc' }]
+      }).then(function (result) {
+        renderAllEntries(result.docs); // Each element is the actual document.
+      }).catch(function (err) {
+        console.error(err);
+      });
+    }
   }
 
   /**
@@ -135,7 +149,7 @@
   }
 
   function convertHashTagsToLinks(htmlContent) {
-    return htmlContent.replace(/#(\w+)/g, '<a href="?hastag=$1">#$1</a>');
+    return htmlContent.replace(/#(\w+)/g, '<a href="?hashtag=$1">#$1</a>');
   }
 
   /**
@@ -199,7 +213,15 @@
     ul.innerHTML = '';
 
     entrys.forEach(function (entry) {
-      ul.appendChild(createEntryListItem(entry.doc));
+      // Depending on whether db.find or db.allDocs was used, there is a nested doc element.
+      var doc;
+      if (entry.doc !== undefined) {
+        doc = entry.doc;
+      }else{
+        doc = entry;
+      }
+      
+      ul.appendChild(createEntryListItem(doc));
     });
   }
 
@@ -222,7 +244,8 @@
   }
 
   addEventListeners();
-  showAllEntries();
+  let searchString = new URLSearchParams(window.location.search).get('hashtag');
+  showAllEntries(searchString);
 
   if (remoteCouch) {
     initializeSynchronization();
