@@ -128,6 +128,10 @@
     }
   }
 
+  function convertHashTagsToLinks(htmlContent) {
+    return htmlContent.replace(/#(\w+)/g, '<a href="?hastag=$1">#$1</a>');
+  }
+
   /**
    * Builds an HTML list item (<li>) containing the entry.
    * @param {*} entry 
@@ -146,7 +150,9 @@
       simpleLineBreaks: true, // Add <br> tags for single line breaks.
       simplifiedAutoLink: true, // Convert plain text URLs to links.
     });
-    let htmlContent = converter.makeHtml(entry.content);
+    var htmlContent = converter.makeHtml(entry.content);
+
+    htmlContent = convertHashTagsToLinks(htmlContent);
 
     var label = document.createElement('label');
     label.innerHTML = htmlContent;
