@@ -84,6 +84,9 @@ button {
   display: block;
 }
 
+#entry-list li label p {
+  margin-bottom: 0;
+}
 
 #entry-list li .delete {
   display: none;
