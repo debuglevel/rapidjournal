@@ -80,7 +80,7 @@
 
   // The input box when editing a entry has blurred, we should save
   // the new title or delete the entry if the title is empty
-  function entryBlurred(entry, event) {
+  function onEntryBlurred(entry, event) {
     var trimmedText = event.target.value.trim();
     if (!trimmedText) {
       db.remove(entry);
@@ -122,7 +122,7 @@
   // If they press enter while editing an entry, blur it to trigger save
   // TODO: Seems like a hack.
   function onEntryKeyPressed(entry, event) {
-    if (event.keyCode === ENTER_KEY) {
+    if (!event.shiftKey && event.keyCode === ENTER_KEY) {
       var inputEditEntry = document.getElementById('input_' + entry._id);
       inputEditEntry.blur();
     }
@@ -162,12 +162,12 @@
     divDisplay.appendChild(label);
     divDisplay.appendChild(deleteLink);
 
-    var inputEditEntry = document.createElement('input');
+    var inputEditEntry = document.createElement('textarea');
     inputEditEntry.id = 'input_' + entry._id;
     inputEditEntry.className = 'edit';
-    inputEditEntry.value = entry.content;
+    inputEditEntry.innerHTML = entry.content;
     inputEditEntry.addEventListener('keypress', onEntryKeyPressed.bind(this, entry));
-    inputEditEntry.addEventListener('blur', entryBlurred.bind(this, entry));
+    inputEditEntry.addEventListener('blur', onEntryBlurred.bind(this, entry));
 
     var li = document.createElement('li');
     li.id = 'li_' + entry._id;
