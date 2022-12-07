@@ -140,9 +140,17 @@
       new Date(entry.datetime).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })
     ));
 
-    // TODO: Display strings with \n inside in this <label>.
+    // Convert markdown to HTML
+    let converter = new showdown.Converter({
+      requireSpaceBeforeHeadingText: true, // Do not interpret "#Heading" as heading but only "# Heading".
+      simpleLineBreaks: true, // Add <br> tags for single line breaks.
+      simplifiedAutoLink: true, // Convert plain text URLs to links.
+    });
+    let htmlContent = converter.makeHtml(entry.content);
+
     var label = document.createElement('label');
-    label.appendChild(document.createTextNode(content));
+    label.innerHTML = htmlContent;
+    //label.appendChild(document.createTextNode(entry.content));
     label.addEventListener('dblclick', onEntryDoubleClicked.bind(this, entry));
 
     var deleteLink = document.createElement('button');
