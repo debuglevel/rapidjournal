@@ -150,7 +150,6 @@
 
     var label = document.createElement('label');
     label.innerHTML = htmlContent;
-    //label.appendChild(document.createTextNode(entry.content));
     label.addEventListener('dblclick', onEntryDoubleClicked.bind(this, entry));
 
     var deleteLink = document.createElement('button');
